@@ -10,7 +10,7 @@ const UserForm = ({ users, setUsers }: { users: User[]; setUsers: (users: User[]
     const onSubmit = async (data: any) => {
         const formattedDate = new Date(data.tanggalLahir).toLocaleDateString("id-ID", {
             day: "2-digit",
-            month: "2-digit",
+            month: "long",
             year: "numeric",
         });
 
@@ -22,7 +22,7 @@ const UserForm = ({ users, setUsers }: { users: User[]; setUsers: (users: User[]
             tanggalLahir: formattedDate,
             tanggalInput: new Date().toLocaleString("id-ID", {
                 day: "2-digit",
-                month: "2-digit",
+                month: "long",
                 year: "numeric",
                 hour: "2-digit",
                 minute: "2-digit",

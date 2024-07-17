@@ -17,7 +17,12 @@ const UserTable = ({ users }: { users: User[] }) => {
         setIsEditing(true);
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: number, nama: string) => {
+        const confirmDelete = window.confirm(`Apakah Anda yakin ingin menghapus ${nama}?`);
+        if (!confirmDelete) {
+            return;
+        }
+
         setIsDeleting(true);
         try {
             await fetch(`/api/users/${id}`, {
@@ -97,7 +102,7 @@ const UserTable = ({ users }: { users: User[] }) => {
                                 ) : (
                                     <button
                                         className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-                                        onClick={() => handleDelete(user.id)}
+                                        onClick={() => handleDelete(user.id, user.nama)}
                                     >
                                         <BsTrashFill />
                                     </button>
@@ -142,7 +147,61 @@ const UserTable = ({ users }: { users: User[] }) => {
                             onChange={(e) => setEditedUser({ ...editedUser, nama: e.target.value })}
                         />
                     </div>
-                    {/* Add other fields similarly */}
+                    <div className="mb-3">
+                        <label htmlFor="editAlamat" className="block text-gray-700 font-bold mb-2">
+                            Alamat
+                        </label>
+                        <input
+                            type="text"
+                            id="editAlamat"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            value={editedUser.alamat}
+                            onChange={(e) => setEditedUser({ ...editedUser, alamat: e.target.value })}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="editJenisKelamin" className="block text-gray-700 font-bold mb-2">
+                            Jenis Kelamin
+                        </label>
+                        <div className="flex items-center">
+                            <input
+                                type="radio"
+                                id="editMale"
+                                name="editJenisKelamin"
+                                value="P"
+                                checked={editedUser.jenisKelamin === "P"}
+                                onChange={(e) => setEditedUser({ ...editedUser, jenisKelamin: e.target.value })}
+                                className="mr-2"
+                            />
+                            <label htmlFor="editMale" className="text-gray-700">
+                                Pria
+                            </label>
+                            <input
+                                type="radio"
+                                id="editFemale"
+                                name="editJenisKelamin"
+                                value="W"
+                                checked={editedUser.jenisKelamin === "W"}
+                                onChange={(e) => setEditedUser({ ...editedUser, jenisKelamin: e.target.value })}
+                                className="mr-2 ml-4"
+                            />
+                            <label htmlFor="editFemale" className="text-gray-700">
+                                Wanita
+                            </label>
+                        </div>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="editTanggalLahir" className="block text-gray-700 font-bold mb-2">
+                            Tanggal Lahir
+                        </label>
+                        <input
+                            type="date"
+                            id="editTanggalLahir"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            value={editedUser.tanggalLahir}
+                            onChange={(e) => setEditedUser({ ...editedUser, tanggalLahir: e.target.value })}
+                        />
+                    </div>
                     <div className="flex justify-end">
                         <button
                             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
@@ -159,6 +218,7 @@ const UserTable = ({ users }: { users: User[] }) => {
                     </div>
                 </div>
             )}
+
         </div>
     );
 };
