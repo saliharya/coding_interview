@@ -1,4 +1,3 @@
-"use client";
 import { useState } from "react";
 import { BsEyeFill, BsPencilFill, BsTrashFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
@@ -7,10 +6,15 @@ import { User } from "@/pages/api/types";
 const UserTable = ({ users }: { users: User[] }) => {
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedUser, setEditedUser] = useState<User | null>(null);
     const router = useRouter();
 
-    const handleView = (user: User) => {
-        setSelectedUser(user);
+    const handleView = (user: User) => setSelectedUser(user);
+
+    const handleEdit = (user: User) => {
+        setEditedUser(user);
+        setIsEditing(true);
     };
 
     const handleDelete = async (id: number) => {
@@ -19,11 +23,6 @@ const UserTable = ({ users }: { users: User[] }) => {
             await fetch(`/api/users/${id}`, {
                 method: "DELETE",
             });
-            const updatedUsers = users.filter((user) => user.id !== id);
-            // update state users
-            // setUsers(updatedUsers); 
-            // Update state in a more efficient way 
-            // by directly mutating the array and avoiding unnecessary re-renders.
             users.splice(users.findIndex((user) => user.id === id), 1);
             setIsDeleting(false);
             router.refresh();
@@ -31,6 +30,30 @@ const UserTable = ({ users }: { users: User[] }) => {
             console.error("Error deleting user:", error);
             setIsDeleting(false);
         }
+    };
+
+    const handleSaveEdit = async (editedData: User) => {
+        try {
+            await fetch(`/api/users/${editedData.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(editedData),
+            });
+            const index = users.findIndex((user) => user.id === editedData.id);
+            if (index !== -1) {
+                users[index] = editedData;
+            }
+            setIsEditing(false);
+        } catch (error) {
+            console.error("Error editing user:", error);
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+        setEditedUser(null);
     };
 
     return (
@@ -63,7 +86,7 @@ const UserTable = ({ users }: { users: User[] }) => {
                                 </button>
                                 <button
                                     className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2"
-                                    onClick={() => router.push(`/update/${user.id}`)}
+                                    onClick={() => handleEdit(user)}
                                 >
                                     <BsPencilFill />
                                 </button>
@@ -84,6 +107,7 @@ const UserTable = ({ users }: { users: User[] }) => {
                     ))}
                 </tbody>
             </table>
+
             {selectedUser && (
                 <div className="mt-4 bg-gray-100 p-4 rounded">
                     <h2 className="text-xl font-bold mb-2">Detail Pengguna</h2>
@@ -100,6 +124,39 @@ const UserTable = ({ users }: { users: User[] }) => {
                     >
                         Tutup
                     </button>
+                </div>
+            )}
+
+            {isEditing && editedUser && (
+                <div className="mt-4 bg-gray-100 p-4 rounded">
+                    <h2 className="text-xl font-bold mb-2">Edit Pengguna</h2>
+                    <div className="mb-3">
+                        <label htmlFor="editNama" className="block text-gray-700 font-bold mb-2">
+                            Nama
+                        </label>
+                        <input
+                            type="text"
+                            id="editNama"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            value={editedUser.nama}
+                            onChange={(e) => setEditedUser({ ...editedUser, nama: e.target.value })}
+                        />
+                    </div>
+                    {/* Add other fields similarly */}
+                    <div className="flex justify-end">
+                        <button
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
+                            onClick={() => handleSaveEdit(editedUser)}
+                        >
+                            Simpan
+                        </button>
+                        <button
+                            className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            onClick={handleCancelEdit}
+                        >
+                            Batal
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
