@@ -1,9 +1,18 @@
 "use client";
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { User } from "@/pages/api/types";
+import InputField from "./InputField";
+import RadioGroup from "./RadioGroup";
+import Button from "./Button";
 
-const UserForm = ({ users, setUsers }: { users: User[]; setUsers: (users: User[]) => void }) => {
+interface UserFormProps {
+    users: User[];
+    setUsers: (users: User[]) => void;
+}
+
+const UserForm = ({ users, setUsers }: UserFormProps) => {
     const { register, handleSubmit, reset } = useForm();
     const [isAdding, setIsAdding] = useState(false);
 
@@ -49,91 +58,37 @@ const UserForm = ({ users, setUsers }: { users: User[]; setUsers: (users: User[]
     return (
         <div className="mb-4">
             {!isAdding && (
-                <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    onClick={() => setIsAdding(true)}
-                >
-                    Tambah Pengguna
-                </button>
+                <Button onClick={() => setIsAdding(true)}>Tambah Pengguna</Button>
             )}
             {isAdding && (
                 <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-                    <div className="mb-3">
-                        <label htmlFor="nama" className="block text-gray-700 font-bold mb-2">
-                            Nama
-                        </label>
-                        <input
-                            type="text"
-                            id="nama"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            {...register("nama", { required: true })}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="alamat" className="block text-gray-700 font-bold mb-2">
-                            Alamat
-                        </label>
-                        <input
-                            type="text"
-                            id="alamat"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            {...register("alamat")}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="jenisKelamin" className="block text-gray-700 font-bold mb-2">
-                            Jenis Kelamin
-                        </label>
-                        <div className="flex items-center">
-                            <input
-                                type="radio"
-                                id="male"
-                                name="jenisKelamin"
-                                value="P"
-                                {...register("jenisKelamin")}
-                                className="mr-2"
-                            />
-                            <label htmlFor="male" className="text-gray-700">
-                                Pria
-                            </label>
-                            <input
-                                type="radio"
-                                id="female"
-                                name="jenisKelamin"
-                                value="W"
-                                {...register("jenisKelamin")}
-                                className="mr-2 ml-4"
-                            />
-                            <label htmlFor="female" className="text-gray-700">
-                                Wanita
-                            </label>
-                        </div>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="tanggalLahir" className="block text-gray-700 font-bold mb-2">
-                            Tanggal Lahir
-                        </label>
-                        <input
-                            type="date"
-                            id="tanggalLahir"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            {...register("tanggalLahir")}
-                        />
-                    </div>
+                    <InputField
+                        label="Nama"
+                        id="nama"
+                        register={register("nama", { required: true })}
+                    />
+                    <InputField label="Alamat" id="alamat" register={register("alamat")} />
+                    <RadioGroup
+                        label="Jenis Kelamin"
+                        register={register("jenisKelamin")}
+                        options={[
+                            { label: "Pria", value: "P" },
+                            { label: "Wanita", value: "W" },
+                        ]}
+                    />
+                    <InputField
+                        label="Tanggal Lahir"
+                        id="tanggalLahir"
+                        type="date"
+                        register={register("tanggalLahir")}
+                    />
                     <div className="flex justify-end">
-                        <button
-                            type="submit"
-                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
-                        >
+                        <Button type="submit" variant="green">
                             Simpan
-                        </button>
-                        <button
-                            type="button"
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            onClick={() => setIsAdding(false)}
-                        >
+                        </Button>
+                        <Button onClick={() => setIsAdding(false)} variant="red">
                             Batal
-                        </button>
+                        </Button>
                     </div>
                 </form>
             )}

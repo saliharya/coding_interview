@@ -6,7 +6,7 @@ export const users: User[] = [
         "nama": "Salih Arya Gumilang",
         "alamat": "Yogyakarta",
         "jenisKelamin": "P",
-        "tanggalLahir": "2001-01-29",
-        "tanggalInput": "18/07/2024, 03.16.23"
+        "tanggalLahir": "29 Januari 2001",
+        "tanggalInput": "18 Juli 2024 pukul 04.14.34"
     }
 ];
