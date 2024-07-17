@@ -4,9 +4,10 @@ interface RadioGroupProps {
     label: string;
     register: any;
     options: { label: string; value: string }[];
+    error?: string;
 }
 
-const RadioGroup = ({ label, register, options }: RadioGroupProps) => {
+const RadioGroup = ({ label, register, options, error }: RadioGroupProps) => {
     return (
         <div className="mb-3">
             <label htmlFor={label} className="block text-gray-700 font-bold mb-2">
@@ -29,6 +30,7 @@ const RadioGroup = ({ label, register, options }: RadioGroupProps) => {
                     </div>
                 ))}
             </div>
+            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
         </div>
     );
 };

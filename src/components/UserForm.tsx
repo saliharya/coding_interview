@@ -13,15 +13,23 @@ interface UserFormProps {
 }
 
 const UserForm = ({ users, setUsers }: UserFormProps) => {
-    const { register, handleSubmit, reset } = useForm();
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm();
     const [isAdding, setIsAdding] = useState(false);
 
     const onSubmit = async (data: any) => {
-        const formattedDate = new Date(data.tanggalLahir).toLocaleDateString("id-ID", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-        });
+        const formattedDate = new Date(data.tanggalLahir).toLocaleDateString(
+            "id-ID",
+            {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+            }
+        );
 
         const newUser: User = {
             id: users.length + 1,
@@ -65,22 +73,34 @@ const UserForm = ({ users, setUsers }: UserFormProps) => {
                     <InputField
                         label="Nama"
                         id="nama"
-                        register={register("nama", { required: true })}
+                        register={register("nama", { required: "Nama harus diisi" })}
+                        error={errors.nama?.message as string | undefined}
                     />
-                    <InputField label="Alamat" id="alamat" register={register("alamat")} />
+                    <InputField
+                        label="Alamat"
+                        id="alamat"
+                        register={register("alamat")}
+                        error={errors.alamat?.message as string | undefined}
+                    />
                     <RadioGroup
                         label="Jenis Kelamin"
-                        register={register("jenisKelamin")}
+                        register={register("jenisKelamin", {
+                            required: "Jenis kelamin harus dipilih",
+                        })}
                         options={[
                             { label: "Pria", value: "P" },
                             { label: "Wanita", value: "W" },
                         ]}
+                        error={errors.jenisKelamin?.message as string | undefined}
                     />
                     <InputField
                         label="Tanggal Lahir"
                         id="tanggalLahir"
                         type="date"
-                        register={register("tanggalLahir")}
+                        register={register("tanggalLahir", {
+                            required: "Tanggal lahir harus diisi",
+                        })}
+                        error={errors.tanggalLahir?.message as string | undefined}
                     />
                     <div className="flex justify-end">
                         <Button type="submit" variant="green">

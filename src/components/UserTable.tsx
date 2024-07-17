@@ -1,7 +1,10 @@
+
+
+
+
 "use client";
 
 import { useState } from "react";
-import { BsEyeFill, BsPencilFill, BsTrashFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { User } from "@/pages/api/types";
 import UserRow from "./UserRow";
@@ -60,6 +63,7 @@ const UserTable = ({ users }: UserTableProps) => {
                 users[index] = editedData;
             }
             setIsEditing(false);
+            router.refresh();
         } catch (error) {
             console.error("Error editing user:", error);
         }
@@ -97,7 +101,9 @@ const UserTable = ({ users }: UserTableProps) => {
                 </tbody>
             </table>
 
-            {selectedUser && <UserDetail user={selectedUser} onClose={() => setSelectedUser(null)} />}
+            {selectedUser && (
+                <UserDetail user={selectedUser} onClose={() => setSelectedUser(null)} />
+            )}
             {isEditing && editedUser && (
                 <UserEdit
                     user={editedUser}
